@@ -7,9 +7,14 @@ import {
   History, 
   BarChart3,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 interface SidebarProps {
   activeTab: string;
@@ -25,6 +30,7 @@ const navigation = [
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { profile, signOut } = useAuth();
 
   return (
     <>
@@ -79,10 +85,43 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             })}
           </nav>
 
-          {/* Footer */}
-          <div className="p-4 border-t">
-            <div className="text-xs text-muted-foreground text-center">
-              Powered by OpenAI & WhatsApp
+          {/* Footer with User Profile */}
+          <div className="mt-auto p-4 space-y-4">
+            <Separator />
+            
+            {/* User Profile Section */}
+            <div className="flex items-center space-x-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {profile?.full_name ? profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase() : <User className="h-4 w-4" />}
+                </AvatarFallback>
+              </Avatar>
+              
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {profile?.full_name || 'Usuário'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {profile?.email}
+                </p>
+              </div>
+            </div>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              className="w-full justify-start text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+            
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground">
+                ChatBot RAG v1.0
+              </p>
             </div>
           </div>
         </div>

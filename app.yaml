@@ -1,0 +1,29 @@
+# Google App Engine configuration for ChatBot RAG
+runtime: nodejs18
+
+env_variables:
+  NODE_ENV: production
+
+handlers:
+  # Serve static files
+  - url: /static
+    static_dir: dist/static
+    secure: always
+    
+  - url: /(.*\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))$
+    static_files: dist/\1
+    upload: dist/(.*\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))$
+    secure: always
+    expiration: "1d"
+    
+  # Serve index.html for all other routes (SPA routing)
+  - url: /.*
+    static_files: dist/index.html
+    upload: dist/index.html
+    secure: always
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 10
+  target_cpu_utilization: 0.6
+  target_throughput_utilization: 0.6
